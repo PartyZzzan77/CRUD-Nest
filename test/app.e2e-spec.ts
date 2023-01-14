@@ -1,10 +1,24 @@
+import { CreateReviewDto } from './../src/review/dto/create-review.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { Types, disconnect } from 'mongoose';
+import { REVIEW_NOT_FOUND } from '../src/review/review.constants';
+
+const productId = new Types.ObjectId().toHexString()
+
+const testDto: CreateReviewDto = {
+	name: 'Test',
+	title: 'Title',
+	rating: 5,
+	description: 'lorem ipsum',
+	productId
+}
 
 describe('AppController (e2e)', () => {
 	let app: INestApplication;
+	let createdId: string
 
 	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -15,10 +29,54 @@ describe('AppController (e2e)', () => {
 		await app.init();
 	});
 
-	it('/ (GET)', () => {
+	it('/review/create (POST)', async (done) => {
 		return request(app.getHttpServer())
-			.get('/')
-			.expect(200)
-			.expect('Hello World!');
+			.post('/review/create')
+			.send(testDto)
+			.expect(201)
+			.then(({ body }) => {
+				createdId = body._id;
+				expect(createdId).toBeDefined()
+
+				done()
+			})
 	});
+
+	it('/review/byProduct/:productId (GET) - OK', async (done) => {
+		return request(app.getHttpServer())
+			.get('/review/byProduct/' + createdId)
+			.expect(200)
+			.then(({ body }: request.Response) => {
+				expect(body.length).toBe(1)
+
+				done()
+			})
+	});
+
+	it('/review/:id (DELETE)', async () => {
+		return request(app.getHttpServer())
+			.delete('/review/' + createdId)
+			.expect(200)
+	});
+
+	it('/review/byProduct/:productId (GET) - ERR', async (done) => {
+		return request(app.getHttpServer())
+			.get('/review/byProduct/' + new Types.ObjectId().toHexString())
+			.expect(200)
+			.then(({ body }: request.Response) => {
+				expect(body.length).toBe(0)
+
+				done()
+			})
+	});
+
+	it('/review/:id (DELETE)', async () => {
+		return request(app.getHttpServer())
+			.delete('/review/' + new Types.ObjectId().toHexString())
+			.expect(404, { statusCode: 404, message: REVIEW_NOT_FOUND })
+	});
+
+	afterAll(() => {
+		disconnect()
+	})
 });
