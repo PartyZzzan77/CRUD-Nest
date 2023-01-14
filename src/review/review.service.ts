@@ -7,17 +7,26 @@ import { InjectModel } from 'nestjs-typegoose';
 
 @Injectable()
 export class ReviewService {
-	constructor(@InjectModel(ReviewModel) private readonly reviewModel: ModelType<ReviewModel>) { }
+	constructor(
+		@InjectModel(ReviewModel)
+		private readonly reviewModel: ModelType<ReviewModel>,
+	) {}
 
 	async create(dto: CreateReviewDto): Promise<DocumentType<ReviewModel>> {
-		return this.reviewModel.create(dto)
+		return this.reviewModel.create(dto);
 	}
 
 	async delete(id: string): Promise<DocumentType<ReviewModel> | null> {
-		return this.reviewModel.findByIdAndDelete(id).exec()
+		return this.reviewModel.findByIdAndDelete(id).exec();
+	}
+
+	async deleteByProductId(id: string) {
+		return this.reviewModel
+			.deleteMany({ id: new Types.ObjectId(id) })
+			.exec();
 	}
 
 	async findByProductId(id: string): Promise<DocumentType<ReviewModel>[]> {
-		return this.reviewModel.find({ id: Types.ObjectId }).exec()
+		return this.reviewModel.find({ id: new Types.ObjectId(id) }).exec();
 	}
 }

@@ -5,11 +5,15 @@ import { TypegooseModule } from 'nestjs-typegoose';
 
 @Module({
 	controllers: [TopPageController],
-	imports: [TypegooseModule.forFeature([{
-		typegooseClass: TopPageModel,
-		schemaOptions: {
-			collection: 'TopPage'
-		}
-	}])]
+	imports: [
+		TypegooseModule.forFeature([
+			{
+				typegooseClass: TopPageModel,
+				schemaOptions: {
+					collection: 'TopPage',
+				},
+			},
+		]),
+	],
 })
-export class TopPageModule { }
+export class TopPageModule {}

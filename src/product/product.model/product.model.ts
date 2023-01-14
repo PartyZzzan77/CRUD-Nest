@@ -5,9 +5,9 @@ export class ProductCharacteristic {
 	@prop()
 	name: string;
 	@prop()
-	value: string
+	value: string;
 }
-export interface ProductModel extends Base { }
+export interface ProductModel extends Base {}
 export class ProductModel extends TimeStamps {
 	@prop()
 	image: string;
@@ -41,5 +41,5 @@ export class ProductModel extends TimeStamps {
 	@prop({ type: () => [String] })
 	tags: string[];
 	@prop({ type: () => [ProductCharacteristic], _id: false })
-	characteristics: ProductCharacteristic[]
+	characteristics: ProductCharacteristic[];
 }
