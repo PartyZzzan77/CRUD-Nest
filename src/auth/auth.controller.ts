@@ -13,7 +13,7 @@ import { AuthDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(private readonly authService: AuthService) { }
 
 	@UsePipes(new ValidationPipe())
 	@Post('register')
@@ -26,7 +26,12 @@ export class AuthController {
 		return this.authService.createUser(dto);
 	}
 
+	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
 	@Post('login')
-	async login(@Body() dto: AuthDto) {}
+	async login(@Body() { login, password }: AuthDto) {
+		const { email } = await this.authService.validateUser(login, password);
+
+		return await this.authService.login(email)
+	}
 }

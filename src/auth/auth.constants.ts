@@ -1,2 +1,4 @@
 export const ALREADY_REGISTERED_ERROR =
-	'such a user has already been registered ';
+	'Such a user has already been registered ';
+export const USER_NOT_FOUND_ERROR = 'No user with this email was found '
+export const INVALID_PASSWORD_ERROR = 'Password is not valid'
