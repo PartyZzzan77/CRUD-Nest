@@ -2,7 +2,7 @@ import { UserModel } from './../user.model/user.model';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt'
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
 export class JWTStrategy extends PassportStrategy(Strategy) {
@@ -10,11 +10,11 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			ignoreExpiration: true,
-			secretOrKey: configService.get('JWT_SECRET')
-		})
+			secretOrKey: configService.get('JWT_SECRET'),
+		});
 	}
 
 	async validate({ email }): Promise<Pick<UserModel, 'email'>> {
-		return email
+		return email;
 	}
 }

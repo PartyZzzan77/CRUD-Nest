@@ -24,6 +24,6 @@ import { JWTStrategy } from './auth/strategies/jwt.strategy';
 		ReviewModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, JWTStrategy],
+	providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
