@@ -1,3 +1,4 @@
+import { JWTAuthGuard } from './../auth/guards/jwt.guard';
 import { REVIEW_NOT_FOUND } from './review.constants';
 import { CreateReviewDto } from './dto/create-review.dto';
 import {
@@ -7,16 +8,16 @@ import {
 	Get,
 	HttpException,
 	HttpStatus,
-	Inject,
 	Param,
 	Post,
+	UseGuards,
 	UsePipes,
 	ValidationPipe,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 @Controller('review')
 export class ReviewController {
-	constructor(private readonly reviewService: ReviewService) {}
+	constructor(private readonly reviewService: ReviewService) { }
 
 	@UsePipes(new ValidationPipe())
 	@Post('create')
@@ -24,6 +25,7 @@ export class ReviewController {
 		return this.reviewService.create(dto);
 	}
 
+	@UseGuards(JWTAuthGuard)
 	@Delete(':id')
 	async delete(@Param('id') id: string) {
 		const deleteDoc = await this.reviewService.delete(id);
